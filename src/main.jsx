@@ -23,7 +23,8 @@ import { experience } from './data/experience.js';
 import { interests } from './data/interests.js';
 import { personal } from './data/personal.js';
 import { certifications } from "./data/certifications.js";
-
+import ScrollProgress from "./components/ScrollProgress.jsx";
+import Footer from "./components/Footer.jsx";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -40,13 +41,60 @@ function App() {
     setMenuOpen(false);
   };
 
+  useEffect(() => {
+    const closeMenu = () => setMenuOpen(false);
+
+    window.addEventListener('resize', closeMenu);
+
+    const sections = document.querySelectorAll('main > section');
+
+    // Fall back to visible sections if the browser lacks this API.
+    if (!('IntersectionObserver' in window)) {
+      sections.forEach((section) => {
+        section.classList.add('is-visible');
+      });
+
+      return () => {
+        window.removeEventListener('resize', closeMenu);
+      };
+    }
+
+    document.documentElement.classList.add('reveal-ready');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: '0px 0px -35px 0px',
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => {
+      window.removeEventListener('resize', closeMenu);
+      observer.disconnect();
+      document.documentElement.classList.remove('reveal-ready');
+    };
+  }, []);
+
 
   return (
     <div className="min-h-screen bg-ink text-primary selection:bg-accent selection:text-white">
+      <ScrollProgress />
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-ink/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
           <button onClick={() => scrollTo('home')} className="group text-left" aria-label="Go to home">
-            <div className="text-sm font-black tracking-[0.22em] text-primary">MGG<span className="text-secondary">.</span></div>
+            <div className="text-sm font-black tracking-[0.22em] text-primary">
+              MGG<span className="text-accentRed">.</span>
+            </div>
             <div className="text-[10px] font-semibold tracking-[0.18em] text-secondary">SHIN YAMAUCHI</div>
           </button>
 
@@ -89,13 +137,13 @@ function App() {
           <div className="mx-auto grid max-w-7xl items-end gap-14 px-5 pb-24 lg:grid-cols-[1.25fr_.75fr] lg:px-8 lg:pb-32">
             <div>
               <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/10 bg-paper px-3 py-1.5 text-xs font-semibold tracking-wide text-secondary">
-                <span className="h-2 w-2 rounded-full bg-accent"  /> Open to backend & systems opportunities
+                <span className="availability-dot h-2 w-2 rounded-full bg-accentBlue" /> Open to backend & systems opportunities
               </div>
               <p className="mb-4 text-xs font-bold uppercase tracking-[0.28em] text-secondary">Michael G. Gonzaga</p>
               <h1 className="max-w-5xl text-[clamp(3.2rem,8vw,8.4rem)] font-black leading-[0.86] tracking-[-0.075em] text-primary">
                 I BUILD
                 <br />
-                <span className="text-accent">SYSTEMS</span>
+                <span className="hero-highlight">SYSTEMS</span>
                 <br />
                 THAT WORK.
               </h1>
@@ -269,12 +317,7 @@ function App() {
         </section>
       </main>
 
-      <footer className="border-t border-white/10 bg-ink">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-8 text-xs font-semibold text-secondary sm:flex-row sm:items-center sm:justify-between lg:px-8">
-          <span>© {new Date().getFullYear()} Michael G. Gonzaga</span>
-          <span>Michael G. Gonzaga · also known as Shin Yamauchi</span>
-        </div>
-      </footer>
+      <Footer />
 
       {activeProject && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-ink/70 p-5 backdrop-blur-sm" onClick={() => setActiveProject(null)}>

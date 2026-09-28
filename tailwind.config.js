@@ -9,15 +9,26 @@ export default {
       colors: {
         ink: '#08090D',
         paper: '#10121A',
+        surfaceAlt: '#171B2A',
+        surfaceRaised: '#1D2335',
+
         primary: '#F5F7FA',
-        secondary: '#9CA3AF',
+        secondary: '#A1A8B8',
+        muted: '#737D91',
+
         accent: '#6366F1',
         accentLight: '#818CF8',
-        border: 'rgba(255,255,255,0.08)',
-        accentBorder: 'rgba(99,102,241,0.35)',
+        accentStrong: '#4F46E5',
+        accentBlue: '#38BDF8',
+        accentRed: '#F05252',
+
+        border: 'rgba(255,255,255,0.09)',
+        borderStrong: 'rgba(255,255,255,0.16)',
+        accentBorder: 'rgba(99,102,241,0.42)',
       },
       boxShadow: {
-        soft: '0 20px 45px rgba(99, 102, 241, 0.12)',
+        soft: '0 20px 45px rgba(0,0,0,0.32)',
+        accent: '0 18px 50px rgba(99,102,241,0.18)',
       },
     },
   },
